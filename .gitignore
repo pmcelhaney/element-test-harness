@@ -1,0 +1,11 @@
+node_modules
+package-lock.json
+.DS_Store
+.eslintcache
+**/*.log
+.stryker-tmp
+coverage
+mock-api/coverage
+mock-api/reports
+storybook-static
+eslint-report.json

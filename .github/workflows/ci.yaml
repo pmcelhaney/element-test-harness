@@ -1,0 +1,49 @@
+name: CI Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-harness:
+    name: CI Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            *.js
+            *.cjs
+            *.mjs
+            *.ts
+            *.json
+            *.md
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - name: Get Node version
+        run: echo "version=$(node -v)" >> $GITHUB_OUTPUT
+        id: node-version
+        shell: bash
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: "${{ inputs.installation_path }}/node_modules"
+          key: ${{ runner.os }}-${{ steps.node-version.outputs.version }}-${{ hashFiles('${{ inputs.installation_path }}/yarn.lock') }}
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+        shell: bash
+      - name: ESLint
+        run: yarn lint:scripts ${{ steps.changed-files.outputs.all_changed_files }}
+      - name: Unit Tests
+        run: yarn test

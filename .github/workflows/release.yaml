@@ -3,7 +3,7 @@ name: Release (Web)
 on:
   push:
     branches:
-      - main
+      - debug
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

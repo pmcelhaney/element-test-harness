@@ -9,6 +9,9 @@
     "lint:scripts": "eslint --no-error-on-unmatched-pattern",
     "test": "jest"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "files": [
     "LICENSE",
     "README.md",

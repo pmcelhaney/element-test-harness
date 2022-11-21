@@ -1,26 +1,22 @@
-name: Release (Web)
-
+name: Publish package to GitHub Packages
 on:
   push:
     branches:
       - debug
-
-permissions:
-  contents: read
-  packages: write
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v3
-      # Setup .npmrc file to publish to npm
+      # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
-      - run: yarn
-      - run: yarn publish
+          registry-url: "https://npm.pkg.github.com"
+      - run: npm ci
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -23,13 +23,6 @@ jobs:
           cache: yarn
       - name: Install Dependencies
         run: yarn
-      - name: Create .npmrc to set up the npm auth token
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //npm.pkg.github.com/:_authToken=${TOKEN_FOR_PRIVATE_NPM_REPO_ON_GITHUB}
-          EOF
-        env:
-          TOKEN_FOR_PRIVATE_NPM_REPO_ON_GITHUB: ${{ secrets.GITHUB_TOKEN }}
       - name: Create a release pull request or (if this is the release PR) publish a release
         id: changesets
         uses: changesets/action@v1

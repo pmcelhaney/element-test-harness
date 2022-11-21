@@ -25,6 +25,8 @@ jobs:
         run: yarn
       - name: publish directly
         run: yarn publish
+        env:
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create a release pull request or (if this is the release PR) publish a release
         id: changesets
         uses: changesets/action@v1

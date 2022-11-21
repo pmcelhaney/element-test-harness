@@ -1,10 +1,9 @@
 {
   "name": "@wh-hc-dev/element-test-harness",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "utility for testing custom elements",
   "main": "src/test-harness.ts",
-  "license": "see LICENSE.md",
-  "private": true,
+  "license": "MIT",
   "scripts": {
     "lint": "eslint .",
     "lint:scripts": "eslint --no-error-on-unmatched-pattern",

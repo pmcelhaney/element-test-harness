@@ -1,34 +1,42 @@
-name: Node CI
+name: Release
 
 on:
   push:
     branches:
-      - debug
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
-
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm / registry setup
-        uses: actions/setup-node@v1
+          node-version: lts/*
+          cache: yarn
+
+      - name: Get Node Version
+        run: echo "::set-output name=version::$(node -v)"
+        id: node-version
+      - name: Cache node_modules
+        uses: actions/cache@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: https://npm.pkg.github.com
-          scope: "@WH-HC-Dev"
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/yarn.lock') }}
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: yarn release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: npm try to publish the package if it's a new version
-        continue-on-error: true
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,11 +1,12 @@
 {
   "name": "element-test-harness",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "utility for testing custom elements",
   "license": "MIT",
   "scripts": {
     "lint": "eslint .",
     "lint:scripts": "eslint --no-error-on-unmatched-pattern",
+    "release": "npx changeset publish",
     "test": "jest"
   },
   "exports": {
@@ -25,7 +26,7 @@
   },
   "bugs": "https://github.com/WH-HC-Dev/element-test-harness/issues",
   "devDependencies": {
-    "@changesets/cli": "^2.25.2",
+    "@changesets/cli": "^2.27.11",
     "@swc/core": "^1.10.4",
     "@swc/jest": "^0.2.37",
     "@types/jest": "^29.2.3",

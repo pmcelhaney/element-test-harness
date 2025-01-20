@@ -1,5 +1,11 @@
 # @wh-hc-dev/element-test-harness
 
+## 0.0.8
+
+### Patch Changes
+
+- fa09e78: testing changesets config
+
 ## 0.0.2
 
 ### Patch Changes

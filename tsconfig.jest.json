@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "rootDir": "."
+  },
+  "include": ["src", "dist"],
+  "exclude": ["node_modules"]
+}

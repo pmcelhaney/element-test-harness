@@ -1,5 +1,11 @@
 # @wh-hc-dev/element-test-harness
 
+## 0.0.10
+
+### Patch Changes
+
+- 00b3e7d: fix the release script so that it builds before releasing
+
 ## 0.0.9
 
 ### Patch Changes

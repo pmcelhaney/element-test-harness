@@ -1,6 +1,6 @@
 {
   "name": "element-test-harness",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "utility for testing custom elements",
   "license": "MIT",
   "scripts": {

@@ -9,3 +9,4 @@ mock-api/coverage
 mock-api/reports
 storybook-static
 eslint-report.json
+dist

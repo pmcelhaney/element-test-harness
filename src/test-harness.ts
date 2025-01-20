@@ -37,7 +37,7 @@ export class TestHarness<T extends LitElement> {
     harness.dispatchedEvents.push({ type: event.type, event });
   }
 
-  // ["constructor"]: typeof TestHarness;
+  ["constructor"]: typeof TestHarness;
 
   /**
    * the custom element under test

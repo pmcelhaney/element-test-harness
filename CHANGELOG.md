@@ -1,5 +1,11 @@
 # @wh-hc-dev/element-test-harness
 
+## 0.0.11
+
+### Patch Changes
+
+- feccd53: add a require to exports; this shouldn't work but it seems to work
+
 ## 0.0.10
 
 ### Patch Changes

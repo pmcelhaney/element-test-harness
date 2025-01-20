@@ -1,5 +1,11 @@
 # @wh-hc-dev/element-test-harness
 
+## 0.0.9
+
+### Patch Changes
+
+- 6ad36b1: fake release so I can test the changesets bot
+
 ## 0.0.8
 
 ### Patch Changes

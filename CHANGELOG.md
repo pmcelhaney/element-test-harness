@@ -1,5 +1,11 @@
 # @wh-hc-dev/element-test-harness
 
+## 0.0.12
+
+### Patch Changes
+
+- 1326a35: added require field to package.json -- it shouldn't work, because the file is ESM, but it does
+
 ## 0.0.11
 
 ### Patch Changes

@@ -15,16 +15,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "skipLibCheck": true,
-    "strictNullChecks": true,
-    "plugins": [
-      {
-        "name": "ts-lit-plugin",
-        "strict": true,
-        "rules": {
-          "no-complex-attribute-binding": "warning"
-        }
-      }
-    ]
+    "strictNullChecks": true
   },
   "include": ["src", "test"],
   "exclude": ["node_modules"]

@@ -1,35 +1,45 @@
-import { LitElement, html, css } from 'lit';
-
-class HelloWorldComponent extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      color: #333;
-    }
-    h1 {
-      color: #007bff;
-    }
-  `;
-
-  static properties = {
-    name: { type: String },
-  };
+class HelloWorldElement extends HTMLElement {
+  static get observedAttributes() {
+    return ["name"];
+  }
 
   constructor() {
     super();
-    this.name = 'World'; // Default name
+    this.attachShadow({ mode: "open" });
+    this.name = "World"; // Default name
+    this.render();
+  }
+
+  connectedCallback() {
+    this.render();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "name" && oldValue !== newValue) {
+      this.name = newValue;
+      this.render();
+    }
   }
 
   render() {
-    return html`
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          font-family: Arial, sans-serif;
+          text-align: center;
+          color: #333;
+        }
+        h1 {
+          color: #007bff;
+        }
+      </style>
       <div>
         <h1>Hello, ${this.name}!</h1>
-        <p>Welcome to Lit web components.</p>
+        <p>Welcome to standard Web Components.</p>
       </div>
     `;
   }
 }
 
-customElements.define('hello-world', HelloWorldComponent);
+customElements.define("hello-world", HelloWorldElement);

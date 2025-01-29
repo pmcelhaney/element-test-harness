@@ -1,14 +1,12 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import {LitElement, html} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
-
+import { LitElement, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import { TestHarness } from "../src/test-harness";
 
 // eslint-disable-next-line @walgreenshealth/element-export-name
 class MyElement extends LitElement {
-
-  @property({type: Number}) counter = 0;
+  @property({ type: Number }) counter = 0;
 
   render() {
     return html`
@@ -84,7 +82,6 @@ describe("TestHarness", () => {
 
     harness.element.counter = 1;
     expect(harness.qs("#counter").textContent).toBe("0");
-
 
     await harness.updateComplete;
 

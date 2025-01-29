@@ -5,8 +5,6 @@ export default {
   testEnvironment: "jsdom",
   coverageProvider: "v8",
 
-  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/example/"],
-
   transform: {
     "^.+\\.(t|j|mj)s?$": "@swc/jest",
   },

@@ -14,6 +14,7 @@ module.exports = {
     "**/coverage/**",
     "**/reports/**",
     "**/.stryker-tmp/**",
+    "/example/",
   ],
 
   overrides: [
@@ -29,7 +30,7 @@ module.exports = {
       parser: "@typescript-eslint/parser",
 
       parserOptions: {
-        project: undefined,
+        project: "./tsconfig.eslint.json",
       },
 
       rules: {

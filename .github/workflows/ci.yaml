@@ -38,8 +38,10 @@ jobs:
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
-          path: "${{ inputs.installation_path }}/node_modules"
-          key: ${{ runner.os }}-${{ steps.node-version.outputs.version }}-${{ hashFiles('${{ inputs.installation_path }}/yarn.lock') }}
+          path: node_modules
+          key: ${{ runner.os }}-${{ steps.node-version.outputs.version }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ steps.node-version.outputs.version }}-
       - name: Install packages
         run: yarn install --frozen-lockfile
         shell: bash

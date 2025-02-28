@@ -1,208 +1,222 @@
 # Element Test Harness
 
-This is a helper for testing custom elements built using Lit Element. It evolved from the practice of writing wrapper classes for custom elements so that the tests are easy to read and maintain.
+Element Test Harness is a utility for testing custom elements built using LitElement. It simplifies the process of writing and maintaining tests by providing a convenient wrapper class for custom elements.
 
-For example, imagine a component that implements a calculator like the one built into iOS. Tests might look something like this.
+## Table of Contents
 
-```ts
-import { html } from "lit";
-import { TestHarness } from "@wh-hc-dev/element-test-harness";
+- [Installation](#installation)
+- [Usage](#usage)
+- [Tutorial](#tutorial)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
 
-import { MyCalculator } from "../src/my-calculator";
+## Installation
 
-class CalculatorHarness extends TestHarness<MyCalculatorElement> {
-  static events = ["calculationComplete"];
+To install Element Test Harness, use npm or yarn:
 
-  static basic() {
-    return this.fixture(html`<my-calculator></my-calculator>`);
-  }
-
-  static scientific() {
-    return this.fixture(html`<my-calculator scientific></my-calculator>`);
-  }
-
-  async pressButtons(...buttons) {
-    await Array.from(buttons).forEach(async (button) => {
-      this.qs(`#${button}`).click();
-      await this.updateComplete();
-    });
-  }
-
-  get display() {
-    return this.qs("#display").textContent();
-  }
-}
-
-it("adds two numbers", async () => {
-  const calculator = await CalculatorHarness.basic();
-
-  await calculator.pressButtons(2, "+", 2, "=");
-  expect(calculator.display).toEqual("4");
-});
-
-it("groups with parentheses", async () => {
-  const calculator = await CalculatorHarness.scientific();
-
-  await calculator.pressButtons(7, "*", "(", 5, "+", 2, ")");
-  expect(calculator.display).toEqual("70");
-});
+```sh
+npm install @wh-hc-dev/element-test-harness
 ```
 
-## Set Up
+or
 
-At the top of your test file (before any `it()` or `describe()` calls) create a subclass of `TestHarness`, passing your element as a type parameter.
-
-```ts
-import { TestHarness } from "@wh-hc-dev/element-test-harness";
-
-import { MyElement } from "../src/my-element";
-
-class MyTestHarness extends TestHarness<MyElement> {
-  // intentionally left blank (for now)
-}
-```
-
-To get an instance of your test harness, use the async static method, `fixture`.
-
-```ts
-const fixture = await MyTestHarness.fixture(
-  document.createElement("my-element")
-);
-```
-
-In practice, it's helpful to add static methods to your subclass to get fixtures of elements that are configured with certain properties.
-
-```ts
-class MyTestHarness extends TestHarness<MyElement> {
-  static simple() {
-    return this.fixture(document.createElement("my-element"));
-  }
-
-  static fancy({ color }) {
-    return this.fixture(html`<my-element color=${color}></my-element>`);
-  }
-}
-
-it("can be simple", async () => {
-  const simple = await myTestHarness.simple();
-
-  // ...
-});
-
-it("can be fancy", async () => {
-  const fancy = await myTestHarness.fancy({ color: "hotpink" });
-
-  // ...
-});
-```
-
-## API
-
-### Querying the Shadow DOM
-
-The `.qs()` method is a shorthand for `element.shadowDom.querySelector()`.
-
-```ts
-const fixture = await MyTestHarness.fixture();
-const button = fixture.qs<HTMLButtonElement>("#save-button");
-```
-
-If no matching element is not found, `qs()` will throw an error. If you want to test whether an element exists, uses `hasElementMatchingSelector()`
-
-```ts
-expect(fixture.hasElementMatchingSelector("#save-button")).toBe(true);
-```
-
-The `.qsa()` method is a shorthand for `element.shadowDom.querySelectorAll()`. It returns the list of matching items wrapped in an array, so you can call `map()`, `filter()`, `find()`, etc. (`querySelectorAll()` returns a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)).
-
-```ts
-const fixture = await MyTestHarness.fixture();
-const buttons = fixture.qsa<HTMLButtonElement>("button");
-const buttonLabels = buttons.map((button) => button.textContent);
-```
-
-### Changing Properties and Awaiting Updates
-
-When properties are updated on a LitElement, the element doesn't rerender _immediately_. We need to wait for the `updateCompete` promise.
-
-```ts
-const fixture = await MyTestHarness.fixture();
-
-expect(fixture.count).toEqual(0);
-fixture.qs<HTMLButtonElement>("#increment").click();
-expect(fixture.count).toEqual(0);
-await fixture.updateComplete;
-expect(fixture.count).toEqual(1);
-```
-
-### Verifying Events
-
-TestHarness logs events that are dispatched by the element (i.e. events that can be registered with `element.addEventListener()`).
-
-```ts
-const fixture = await MyTestHarness.fixture();
-
-const incrementButton = fixture.qs<HTMLButtonElement>("#increment");
-
-increment.click();
-increment.click();
-increment.click();
-
-expect(fixture.dispatchedEvents().length).toBe(3);
-expect(fixture.lastEvent("click").target).toBe(incrementButton);
-```
-
-Note that in order for the test harness to listen for an event the type needs to be declared in the static property, `events`.
-
-```ts
-class MyTestHarness extends TestHarness<MyCalculatorElement> {
-  static events = ["calculationComplete"];
-}
+```sh
+yarn add @wh-hc-dev/element-test-harness
 ```
 
 ## Usage
 
-In practice, you won't often access the methods and properties of `TestHarness` directly from the tests. Instead, you'll use them to build out your own harness, which is a subclass of `TestHarness`.
-
-Let's take a look at the calculator harness from the top again in more detail.
+Here's an example of how to use Element Test Harness to test a custom element:
 
 ```ts
-class CalculatorHarness extends TestHarness<MyCalculatorElement> {
-  // declare the event types used in tests
-  static events = ["calculationComplete"];
+import { html } from "lit";
+import { TestHarness } from "@wh-hc-dev/element-test-harness";
+import "../src/hello-world.js";
 
-  /**
-   * shortcut for a basic calculator
-   */
-  static basic() {
-    return this.fixture(html`<my-calculator></my-calculator>`);
+class HelloWorldHarness extends TestHarness {
+  static withName(name) {
+    return this.fixture(html`<hello-world .name=${name}></hello-world>`);
   }
 
-  /**
-   * shortcut for a calculator instance with the "scientific" attribute enabled
-   */
-  static scientific() {
-    return this.fixture(html`<my-calculator scientific></my-calculator>`);
+  get title() {
+    return this.qs("h1").textContent;
+  }
+}
+
+describe("A <hello-world> element", () => {
+  it("displays the name", async () => {
+    const fixture = await HelloWorldHarness.withName("Patrick");
+
+    expect(fixture.title).toEqual("Hello, Patrick!");
+  });
+});
+```
+
+## Tutorial
+
+### Introduction
+
+This tutorial will guide you through the process of using the Element Test Harness to test custom elements.
+
+### Step 1: Create a Custom Element
+
+First, create a custom element. For this example, we'll create a simple "hello-world" element.
+
+```js
+class HelloWorldElement extends HTMLElement {
+  static get observedAttributes() {
+    return ["name"];
   }
 
-  /**
-   * abstracts the act of clicking several buttons in a
-   * sequence and waiting for the component to re-render
-   */
-  async pressButtons(...buttons) {
-    await Array.from(buttons).forEach(async (button) => {
-      this.qs(`#${button}`).click();
-      await this.updateComplete();
-    });
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.name = "World"; // Default name
+    this.render();
   }
 
-  /**
-   * shortcut to the contents of the calculator display
-   */
-  get display() {
-    return this.qs("#display").textContent();
+  connectedCallback() {
+    this.render();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "name" && oldValue !== newValue) {
+      this.name = newValue;
+      this.render();
+    }
+  }
+
+  render() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          font-family: Arial, sans-serif;
+          text-align: center;
+          color: #333;
+        }
+        h1 {
+          color: #007bff;
+        }
+      </style>
+      <div>
+        <h1>Hello, ${this.name}!</h1>
+        <p>Welcome to standard Web Components.</p>
+      </div>
+    `;
+  }
+}
+
+customElements.define("hello-world", HelloWorldElement);
+```
+
+### Step 2: Create a Test Harness
+
+Next, create a test harness for the custom element.
+
+```ts
+import { TestHarness } from "@wh-hc-dev/element-test-harness";
+import { html } from "lit";
+import "../src/hello-world.js";
+
+class HelloWorldHarness extends TestHarness {
+  static withName(name) {
+    return this.fixture(html`<hello-world .name=${name}></hello-world>`);
+  }
+
+  get title() {
+    return this.qs("h1").textContent;
   }
 }
 ```
 
-A well-designed harness encapsulates the grunt work of fiddling with the DOM so that the unit tests themselves are clear and concise.
+### Step 3: Write Tests
+
+Finally, write tests for the custom element using the test harness.
+
+```ts
+describe("A <hello-world> element", () => {
+  it("displays the name", async () => {
+    const fixture = await HelloWorldHarness.withName("Patrick");
+
+    expect(fixture.title).toEqual("Hello, Patrick!");
+  });
+});
+```
+
+## API Reference
+
+### TestHarness Class
+
+The `TestHarness` class is a base class for creating test harnesses for custom elements.
+
+#### Methods
+
+- `static async fixture(html: LitHTMLRenderable): Promise<TestHarness>`
+  - Creates a fixture for the custom element.
+
+- `qs<E extends Element>(selector: string): E`
+  - Shortcut to the element's shadowRoot.querySelector().
+
+- `qsa<E extends Element>(selector: string): E[]`
+  - Shortcut to the element's shadowRoot.querySelectorAll().
+
+- `hasElementMatchingSelector(selector: string): boolean`
+  - Checks if at least one element matches the selector.
+
+- `lastEvent<E extends Event>(eventType: string): E | undefined`
+  - Returns the last event matching the type received by the element.
+
+- `get updateComplete(): Promise<boolean>`
+  - Shortcut to the element's updateComplete property.
+
+#### Properties
+
+- `element: T`
+  - The custom element under test.
+
+- `dispatchedEvents: { type: string; event: Event }[]`
+  - All of the events that the element received from below or dispatched itself.
+
+#### Example
+
+```ts
+import { LitElement, html } from "lit";
+import { TestHarness } from "@wh-hc-dev/element-test-harness";
+
+class MyElement extends LitElement {
+  render() {
+    return html`<div>Hello, World!</div>`;
+  }
+}
+
+customElements.define("my-element", MyElement);
+
+class MyElementHarness extends TestHarness<MyElement> {
+  static async create() {
+    return this.fixture(html`<my-element></my-element>`);
+  }
+}
+
+describe("MyElement", () => {
+  it("renders correctly", async () => {
+    const harness = await MyElementHarness.create();
+    expect(harness.qs("div").textContent).toBe("Hello, World!");
+  });
+});
+```
+
+## Contributing
+
+We welcome contributions to the Element Test Harness project. If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request on GitHub.
+
+## License
+
+© Copyright 2022 Walgreen Co. 200 Wilmot Rd. Deerfield IL All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

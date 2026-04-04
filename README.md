@@ -193,7 +193,7 @@ class MyElement extends LitElement {
 customElements.define("my-element", MyElement);
 
 class MyElementHarness extends TestHarness<MyElement> {
-  static async create() {
+  static create() {
     return this.fixture(html`<my-element></my-element>`);
   }
 }

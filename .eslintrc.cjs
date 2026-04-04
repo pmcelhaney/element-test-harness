@@ -29,15 +29,24 @@ module.exports = {
 
       parser: "@typescript-eslint/parser",
 
-      parserOptions: {
-        project: "./tsconfig.eslint.json",
-      },
-
       rules: {
         "@typescript-eslint/no-unused-vars": "off",
         "import/unambiguous": "off",
         "import/no-unresolved": "off",
         "no-magic-numbers": "off",
+        "max-classes-per-file": "off",
+        "@walgreenshealth/element-export-name": "off",
+        "padding-line-between-statements": "off",
+      },
+    },
+
+    {
+      files: ["*.md/**/*.js"],
+
+      rules: {
+        "import/unambiguous": "off",
+        "no-inline-comments": "off",
+        "line-comment-position": "off",
       },
     },
 
@@ -50,7 +59,7 @@ module.exports = {
       ],
 
       parserOptions: {
-        project: "tsconfig.json",
+        project: "./tsconfig.eslint.json",
         tsconfigRootDir: __dirname,
         ecmaVersion: 2022,
         sourceType: "module",

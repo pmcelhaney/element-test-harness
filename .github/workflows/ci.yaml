@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: latest
+          node-version: lts/*
           cache: yarn
       - name: Get Node version
         run: echo "version=$(node -v)" >> $GITHUB_OUTPUT

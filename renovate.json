@@ -1,24 +1,30 @@
 {
-  "extends": ["config:base"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
   "rangeStrategy": "update-lockfile",
   "enabledManagers": ["npm", "github-actions"],
   "packageRules": [
     {
       "matchManagers": ["npm"],
       "addLabels": ["web"],
-      "description": "Automatically merge all updates",
+      "description": "Open update PRs so pull-request CI can run",
       "automerge": true,
-      "stabilityDays": 3,
-      "prCreation": "not-pending",
+      "minimumReleaseAge": "3 days",
+      "prCreation": "immediate",
       "ignoreDeps": ["jest", "jest-environment-jsdom"]
     },
     {
       "matchManagers": ["github-actions"],
       "addLabels": ["github_actions"],
-      "description": "Automatically merge all updates",
+      "description": "Open update PRs so pull-request CI can run",
       "automerge": true,
-      "stabilityDays": 3,
-      "prCreation": "not-pending"
+      "minimumReleaseAge": "3 days",
+      "prCreation": "immediate"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "description": "Require review for major version upgrades",
+      "automerge": false
     }
   ]
 }

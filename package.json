@@ -42,7 +42,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@open-wc/testing": "^4.0.0",
+    "@open-wc/testing": "^5.0.0",
     "lit": "^3.2.1",
     "lit-element": "^4.1.1"
   }
